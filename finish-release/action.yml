@@ -28,7 +28,7 @@ runs:
         fetch-depth: 0
 
     - name: Install GitHub CLI
-      uses: actions/setup-gh@v1.1
+      uses: wusatosi/setup-gh@v1.1
 
     - name: Authenticate gh
       shell: bash
