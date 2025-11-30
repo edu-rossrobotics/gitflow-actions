@@ -27,7 +27,7 @@ runs:
       with:
         fetch-depth: 0
 
-    - uses: cli/cli@v2
+    - uses: cli/cli@v2.83.1
 
     - name: Authenticate gh
       env:
