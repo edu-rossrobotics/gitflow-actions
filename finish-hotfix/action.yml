@@ -27,7 +27,8 @@ runs:
       with:
         fetch-depth: 0
 
-    - uses: cli/cli@v2.83.1
+    - name: Install GitHub CLI
+      uses: actions/setup-gh@v1.1
 
     - name: Authenticate gh
       env:
