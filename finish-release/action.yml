@@ -28,7 +28,7 @@ runs:
         fetch-depth: 0
 
     - name: Setup GitHub CLI
-      uses: cli/cli@v2
+      uses: cli/cli@v2.83.1
 
     - name: Authenticate gh
       shell: bash
