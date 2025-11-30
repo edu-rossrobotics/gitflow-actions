@@ -1,0 +1,36 @@
+name: "GitFlow: Create Hotfix"
+description: "Create a hotfix branch from the main branch."
+inputs:
+  version:
+    description: "Hotfix version, e.g. 1.3.1"
+    required: true
+  main_branch:
+    description: "Main branch name"
+    default: "main"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      shell: bash
+
+    - name: Create hotfix branch
+      run: |
+        set -euo pipefail
+        VERSION="${{ inputs.version }}"
+        MAIN="${{ inputs.main_branch }}"
+        HOTFIX="hotfix/${VERSION}"
+
+        git checkout "$MAIN"
+        git pull origin "$MAIN"
+
+        git checkout -b "$HOTFIX"
+        git push origin "$HOTFIX"
+      shell: bash

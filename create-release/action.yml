@@ -1,0 +1,43 @@
+name: "GitFlow: Create Release"
+description: "Create a release branch from the develop branch."
+
+inputs:
+  version:
+    description: "Release version, e.g. 1.4.0"
+    required: true
+
+  develop_branch:
+    description: "Name of the develop branch"
+    required: false
+    default: "devel"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout full history
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Configure Git identity
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+    - name: Create release branch
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        VERSION="${{ inputs.version }}"
+        DEVELOP="${{ inputs.develop_branch }}"
+        RELEASE_BRANCH="release/${VERSION}"
+
+        echo "Creating release branch: $RELEASE_BRANCH from $DEVELOP"
+
+        git checkout "$DEVELOP"
+        git pull origin "$DEVELOP"
+
+        git checkout -b "$RELEASE_BRANCH"
+        git push origin "$RELEASE_BRANCH"

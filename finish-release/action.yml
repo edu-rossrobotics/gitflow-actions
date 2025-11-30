@@ -1,0 +1,59 @@
+name: "GitFlow: Finish Release (PR-based)"
+description: "Create PRs from release into main & devel instead of merging directly."
+
+inputs:
+  release_branch:
+    description: "Release branch, e.g. release/1.2.3"
+    required: true
+
+  version:
+    description: "Version number for display only"
+    required: true
+
+  main_branch:
+    description: "Main branch name"
+    required: false
+    default: "main"
+
+  develop_branch:
+    description: "Develop branch name"
+    required: false
+    default: "devel"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup GitHub CLI
+      uses: cli/cli@v2
+
+    - name: Authenticate gh
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: echo "Authenticated"
+
+    - name: Create PR to main
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh pr create \
+          --base "${{ inputs.main_branch }}" \
+          --head "${{ inputs.release_branch }}" \
+          --title "Release ${{ inputs.version }} → ${{ inputs.main_branch }}" \
+          --body "Automated PR to merge release ${{ inputs.version }} into ${{ inputs.main_branch }}."
+
+    - name: Create PR to develop
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh pr create \
+          --base "${{ inputs.develop_branch }}" \
+          --head "${{ inputs.release_branch }}" \
+          --title "Release ${{ inputs.version }} → ${{ inputs.develop_branch }}" \
+          --body "Automated PR to merge release ${{ inputs.version }} into ${{ inputs.develop_branch }}."
